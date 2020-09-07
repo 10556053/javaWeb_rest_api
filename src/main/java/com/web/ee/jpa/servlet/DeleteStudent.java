@@ -8,6 +8,7 @@ import com.github.javafaker.Faker;
 import com.web.ee.jpa.entity.Student;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
 import java.util.Random;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -19,8 +20,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@WebServlet("/jpa/student/add")
-public class AddStudent extends HttpServlet{
+@WebServlet("/jpa/student/delete")
+public class DeleteStudent extends HttpServlet{
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -32,18 +33,21 @@ public class AddStudent extends HttpServlet{
         // myjpa 是 unit name, 請參考 persistence.xml 中的設定
         EntityManagerFactory emf = (EntityManagerFactory)getServletContext().getAttribute("emf");
         EntityManager em = emf.createEntityManager();
-        // 建立 Student 物件/Entity
-        Student student = new Student();
-        student.setName(new Faker().pokemon().name());
-        student.setAge(new Random().nextInt(10) + 18);
-        // 將 Student 物件/Entity 映射到資料庫, 也就是新增一筆紀錄
-        EntityTransaction et = em.getTransaction();
-        et.begin();
-        em.persist(student);
-        et.commit();
-        em.close();
-        emf.close();
-        out.print("Add OK");
+        
+        // 取得要刪除的Entity(紀錄)
+        Student student = em.find(Student.class, 3L);
+        // 進行刪除
+        if(student == null) {
+            out.print("Delete error");
+        } else {
+            EntityTransaction et = em.getTransaction();
+            et.begin();
+            em.remove(student);
+            et.commit();
+            em.close();
+            out.print("Delete OK");
+        }
+                
     }
     
 }
