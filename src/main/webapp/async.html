@@ -1,0 +1,28 @@
+
+<html>
+    <head>
+        <title>Async Servlet Test</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        <script>
+             function async() {
+                var xhttp = new XMLHttpRequest();
+                xhttp.onreadystatechange = function () {
+                    if (this.readyState >= 3 && this.status == 200) {
+                        var data = this.responseText + '(' + this.readyState + ',' + this.status  + ')';
+                        console.log(data);
+                        document.getElementById("result").innerHTML = this.responseText + '(' + this.readyState + ',' + this.status  + ')';
+                    }
+                };
+                xhttp.open("GET", "/JavaEE0727/async/longjob", true);
+                xhttp.send();
+            }
+        </script>
+    </head>
+    <body>
+        <div>Async Servlet Test</div>
+        <input type="button" value ="start" onclick="async()">
+        <div id="result"> </div>
+    </body>
+</html>
